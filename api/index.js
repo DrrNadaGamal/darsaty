@@ -15,10 +15,16 @@ import {
 const SESSION_DAYS = 30;
 
 let cache = null;
+let cacheAt = 0;
 let writeQueue = Promise.resolve();
 
-async function db() {
-  if (!cache) cache = await getDb();
+// Short TTL + forced reload on unknown sessions: multiple warm instances
+// each hold a cache, so reads must refresh quickly or users see stale state.
+async function db(force) {
+  if (!cache || force || Date.now() - cacheAt > 1500) {
+    cache = await getDb();
+    cacheAt = Date.now();
+  }
   return cache;
 }
 
@@ -369,7 +375,9 @@ export default async function handler(req, res) {
     const url = new URL(req.url, 'http://x');
     const path = url.searchParams.get('path') || url.pathname.replace(/^\/api\/?/, '');
     const route = path.replace(/\.js$/, '').replace(/\/$/, '');
-    const d = await db();
+    let d = await db();
+    const authHdr = req.headers.authorization || '';
+    if (authHdr.startsWith('Bearer ') && !d.sessions?.[authHdr.slice(7)]) d = await db(true);
     switch (route) {
       case 'auth': return await handleAuth(req, res, d);
       case 'courses': return await handleCourses(req, res, d, url);
