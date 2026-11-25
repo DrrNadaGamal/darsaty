@@ -1,0 +1,9 @@
+{
+  "name": "Darsaty",
+  "short_name": "Darsaty",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#171231",
+  "theme_color": "#171231",
+  "icons": []
+}

@@ -1,0 +1,20 @@
+{
+  "name": "darsaty",
+  "version": "1.0.0",
+  "description": "Darsaty - bilingual (AR/EN) online course platform demo: catalog, student area, quizzes, certificates, instructor dashboard",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "for f in tests/unit/*.test.mjs; do node --test \"$f\" || exit 1; done"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@vercel/blob": "^2.9.0",
+    "jspdf": "^4.2.1"
+  }
+}
